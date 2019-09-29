@@ -9,8 +9,8 @@ import (
 	"time"
 )
 
-const x, y = 150, 40 // consts for height and width of board
-const lifePct = 0.30 // % of life the board starts off with 
+const x, y = 150, 60 // consts for height and width of board
+const lifePct = 0.50 // % of life the board starts off with
 
 // Board defines the boards initial width and height
 type Board struct {
@@ -86,7 +86,6 @@ func (b *Board) Tick() {
 			//two or three live neighbours it lives to next generation
 			case cb.cells[y][x] && cb.CheckNeighbours(x, y) == 2 || cb.CheckNeighbours(x, y) == 3:
 				b.cells[y][x] = true
-
 			default:
 				b.cells[y][x] = false
 			}
@@ -100,45 +99,46 @@ func (b *Board) Tick() {
 func (b *Board) CheckNeighbours(x, y int) int {
 	livingCount := 0
 
-	if b.CheckLegalRange(y-1, x) {
+	if b.CheckLegalAndLive(y-1, x) {
 		livingCount++
 	}
 
-	if b.CheckLegalRange(y+1, x) {
+	if b.CheckLegalAndLive(y+1, x) {
 		livingCount++
 	}
 
-	if b.CheckLegalRange(y, x-1) {
+	if b.CheckLegalAndLive(y, x-1) {
 		livingCount++
 	}
 
-	if b.CheckLegalRange(y, x+1) {
+	if b.CheckLegalAndLive(y, x+1) {
 		livingCount++
 	}
 
-	if b.CheckLegalRange(y-1, x-1) {
+	if b.CheckLegalAndLive(y-1, x-1) {
 		livingCount++
 	}
 
-	if b.CheckLegalRange(y-1, x+1) {
+	if b.CheckLegalAndLive(y-1, x+1) {
 		livingCount++
 	}
 
-	if b.CheckLegalRange(y+1, x-1) {
+	if b.CheckLegalAndLive(y+1, x-1) {
 		livingCount++
 	}
-	if b.CheckLegalRange(y+1, x+1) {
+	if b.CheckLegalAndLive(y+1, x+1) {
 		livingCount++
 	}
 	return livingCount
 }
 
-// CheckLegalRange makes sure that the index being tested
-// is legal on our board
-func (b *Board) CheckLegalRange(y, x int) bool {
-	return (x >= 0 && x < b.x && y >= 0 && y < b.y && b.cells[y][x] == true)
+// CheckLegalAndLive makes sure that the index being tested
+// is legal on our board and that cells are alive
+func (b *Board) CheckLegalAndLive(y, x int) bool {
+	return ((x >= 0) && (x < b.x) && (y >= 0 && y < b.y) && (b.cells[y][x] == true))
 
 }
+
 // PrintBoard displays the current state of the board graphically in the CLI
 func (b *Board) PrintBoard() {
 	fmt.Print("+")
@@ -170,15 +170,15 @@ func main() {
 	n := NewBoard(x, y)
 	n.IntializeRandomLife()
 	for i := 0; i > -1; i++ {
-		
 		clrCmd := exec.Command("clear")
 		clrCmd.Stdout = os.Stdout
 		clrCmd.Run()
 		n.Tick()
 		n.PrintBoard()
-		fmt.Printf("Current Gen:%v",i)
+		fmt.Printf("Current Gen:%v", i)
 		time.Sleep(time.Second / 20)
 
 	}
+
 
 }
