@@ -1,2 +1,2 @@
 # GameOfLife_Golang
- Learning Go through the game of life! 
+Learning Go Lang with Conways's Game Of Life! 
